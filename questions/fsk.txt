@@ -1,0 +1,37 @@
+What is a turing machine and for what does it exist?
+
+A turing machine is an abstract computational model described by Alan Turing
+in the 1930s.
+
+A turing machine (TM) is defined via two components: An infinite
+tape of cells which serves as the main memory and a finite state
+machine, that defines how the machine runs, i.e. it describes the program of
+the machine. The tape is infinitely long, but only the blank symbol appears
+infinitely often. Other symbols may only appear finitely often. Memory access,
+so accessing individual cells, is done via the head which points to a cell and
+can move left or right, depending on the FSM that defines the TM. So for each
+state transition in the FSM, the TM can read the contents of the cell the head points
+to and then moves either left or right.
+A TM terminates, when the FSM reaches an accepting state.
+
+This computational model is used to describe what is computable. Something is computable
+if a TM can compute it. Till today no one has found a (realistic) computational model
+that can compute more than what a TM can compute, so it makes sense to use this model for simplicity.
+So this means, that a TM is computationally at least as powerful as known machine or programming
+languages, such as C, C*, Python et cetera.
+A machine or programming language is turing complete if a program in that language can implement any turing machine.
+(also called computationally universal) Most machine or programming languages are turing complete and also can't
+compute more than a TM, which makes them turing equivalent.
+There is a thesis, the Church-Turing thesis, which states that if a language is turing complete then it is also
+turing equivalent, though it is no more than a thesis.
+
+A universal turing machine (UTM) is a TM that takes also takes an encoded FSM of a TM as input. This essentially
+makes the UTM an interpreter of the TMs.
+
+To name an example of a problem, that can't be computed, called undecidable: The Halting problem:
+Is there a program H that takes as input a program P and an input I and returns true
+if H terminates with I as input, otherwise false? In TM terms: Is there a UTM H that takes as input an
+encoded FSM of a TM P and an input I for P and returns true if P reaches it's accepting state if interpreted
+with input I?
+This is an undecidable problem, due to the fact that no TM can compute this.
+
