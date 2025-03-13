@@ -1,12 +1,46 @@
-What do variables work internally in C*?
+How do global variables work internally in C* as implemented by Selfie (identifier, symbol table, declaration/definition, use)?
 
-Variables are implemented as symbolic references to values. This is done using symbol tables
-which are tables where for a variable's identifier, the corresponding value can be retrieved.
+Identifier:
+The variable's name, which is called an identifier, is defined (in the EBNF) to always
+start with a letter and otherwise consist of letters, digits and the underscore character.
+The reason why variables must start with a letter is so that the scanner can immediately
+tell from seeing the first character whether it is an identifier (or keyword) or if it is
+a literal. (integers start with digit, characters start with ', strings start with ")
+So during the scanning process, the scanner can distinguish literals from identifiers. However,
+it cannot easily distinguish identifiers from keywords. So Selfie simply checks for a potential identifier
+whether it matches with an existing keyword. If yes, then a keyword was found. Otherwise, it is indeed an identifier.
+Now an identifier may be a variable or a procedure. So if the next symbol (lookahead of 1) after an identifier is an
+open left parenthesis ('(') then the identifier denotes a procedure. Otherwise, it is definitely a variable's identifier.
 
-Variables can be classified into two variants depending on the location of their declaration:
-- Global variables that are declared in the global scope (outside of any procedure)
-- Local variables that are declared in a local scope (anywhere else)
+Symbol tables:
+Variables are stored in a symbol table. Selfie uses multiple symbol tables to handle scope. The global symbol table is responsible
+for global variables, big integers, string literals and procedures. The local symbol table is responsible for local variables and
+formal parameters of the procedure. So obviously, the global symbol table must be kept during the entire program, whereas local symbol
+tables are destroyed and created on exiting and entering procedures respectively.
+Regarding implementation, a symbol table could be implemented in different ways as a key-value data structure, where the key is the identifier and the value
+is the associated stored data, including the memory location of the actual value. In Selfie, there is the option to use a hash table
+or a list. A list is a data structure where each element has fields that describe the data stored (in Selfie 64 bytes are used per element) of which one
+is a pointer to the next element. So searching through the list works by starting from the first element (head) and checking for each element
+if the key of that element matches the searched key. If not, then the list is further traversed by following the pointer to the next
+element. This is a linear time operation. Meanwhile, a hash table is an array of fixed size (in Selfie 1024 8 byte machine words with a total size of 8KB).
+Searching works like this: First, a hash function is used on the key to generate an index. This hash function returns a value in the range
+[0; 1024) in constant time and ideally is distributed evenly among that range. The index is then used to access an element of the hash table
+in constant time. This element is a head pointer to a list. So if there were keys that produce the same hash, they would both reach the same list,
+where both their entries can be found (assuming they were declared), which is how collision handling is done. If the keys are evenly distributed
+among the hash table, then a hash table is very fast, due to only having to traverse a fraction of a list rather than potentially the entire list
+when using a single list over a hash table.
 
-Storage:
-Global variables are stored in the data segment in memory whereas local variables are
-stored on the stack.
+Declaration/Definition of global variables:
+If there already was an entry in the global symbol table for the given identifier,
+then a syntax error is thrown, to ensure uniqueness of variable's and procedure's names.
+If that is not the case, then the global variable is added to the global symbol table as a new entry. An entry in C* contains the identifier
+and more information, such as the line it was declared, its class (a variable in this case), offset relative to the global pointer (into the data segment)
+and its value if it is also defined. Global variables are assigned an initial value if they were only declared.
+
+Variable Use:
+A variable is used when it appears in a factor (as defined in the grammar) which in turn appears in an expression. In general
+this is if it appears on the right side as an rvalue.
+Thus, if it appears, it's supposed to be used, so its current value must be retrieved. This is done by first checking the corresponding
+local symbol table, in case it is a local variable or formal parameter. If there is no such entry in the local symbol table,
+the global symbol table is checked for global variables. If there is also no entry there, then no variable with that name was declared
+and thus a syntax error is reported.
