@@ -11,6 +11,9 @@ The grammar using EBNF:
 binary_digit = ( "0" | "1" ) .
 binary_number = "0b" binary_digit { binary_digit } .
 (if we are supposed to extend selfie, then additionally: integer = decimal_number | binary_number .)
+The production rules of binary numbers show, that the language of binary numbers is regular, by
+substituting every non-terminal on the right with terminals as defined by the production rules:
+binary_number = "0b" ( "0" | "1" ) { ("0" | "1") } .
 
 And that is it. A binary_number must always start with "0b"
 and must have at least one binary_digit, namely 0 or 1, but may
@@ -29,8 +32,8 @@ The corresponding finite state machine is "drawn" here where:
                                                   |------------------|
 
 If "0" is supposed to be a valid number (e.g. as a decimal number 0), then the state |2~| must
-be changed to be an accepting state. However if we only want binary numbers using the "0b" prefix
-notation, then it must be kept non-accepting.
+be changed to be an accepting state. However, if we only want binary numbers using the "0b" prefix
+notation, then it must be kept as non-accepting state.
 It should be assumed that all other cases result in a termination, as outlined in the book.
 
 A special characteristic of finite state machines is, that they do not require any memory for their
