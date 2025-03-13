@@ -19,16 +19,16 @@ formal parameters of the procedure. So obviously, the global symbol table must b
 tables are destroyed and created on exiting and entering procedures respectively.
 Regarding implementation, a symbol table could be implemented in different ways as a key-value data structure, where the key is the identifier and the value
 is the associated stored data, including the memory location of the actual value. In Selfie, there is the option to use a hash table
-or a list. A list is a data structure where each element has fields that describe the data stored (in Selfie 64 bytes are used per element) of which one
-is a pointer to the next element. So searching through the list works by starting from the first element (head) and checking for each element
-if the key of that element matches the searched key. If not, then the list is further traversed by following the pointer to the next
+or a linked list. A linked list is a data structure where each element has fields that describe the data stored (in Selfie 64 bytes are used per element)
+of which one is a pointer to the next element. So searching through the linked list works by starting from the first element (head) and checking for each element
+if the key of that element matches the searched key. If not, then the linked list is further traversed by following the pointer to the next
 element. This is a linear time operation. Meanwhile, a hash table is an array of fixed size (in Selfie 1024 8 byte machine words with a total size of 8KB).
 Searching works like this: First, a hash function is used on the key to generate an index. This hash function returns a value in the range
 [0; 1024) in constant time and ideally is distributed evenly among that range. The index is then used to access an element of the hash table
-in constant time. This element is a head pointer to a list. So if there were keys that produce the same hash, they would both reach the same list,
+in constant time. This element is a head to a linked list. So if there were keys that produce the same hash, they would both reach the same linked list,
 where both their entries can be found (assuming they were declared), which is how collision handling is done. If the keys are evenly distributed
 among the hash table, then a hash table is very fast, due to only having to traverse a fraction of a list rather than potentially the entire list
-when using a single list over a hash table.
+when using a single linked list over a hash table.
 
 Declaration/Definition of global variables:
 If there already was an entry in the global symbol table for the given identifier,
