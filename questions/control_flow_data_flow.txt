@@ -1,23 +1,37 @@
-How does Control Flow differ from Data Flow and how does it on a machine level enable abstract concepts such as conditional statements, loops and procedures (use RISC-U)?
+How does control flow differ from Data Flow and when does which occur on machine level (name all control flow instructions of RISC-U) and in C*?
 
-Data Flow refers to a state transition of a machine, which means some bits are flipped. "Data Flow", because the data flows between registers and memory.
+Data flow refers to a state transition of a machine, which means some bits are flipped. "Data Flow", because the data flows between registers and memory.
 Examples are instructions like add, which "flows" data from two source registers to one destination register.
 
-Meanwhile Control Flow is whenever the program counter (pc) takes on a new state.
-The most trivial Control Flow is implicit: For each instruction, the pc is incremented by 4 (assuming instructions are 4 bytes long and memory is byte addressed).
-However there is also non-sequential, explicit Control Flow instructions (in RISC-U):
+Meanwhile, control flow is whenever the program counter (pc) takes on a new state.
+The most trivial control flow is implicit: For all data flow instructions, the pc is incremented by the instruction size (in bytes if memory is byte addressed).
+This has the simple effect that after an instruction is executed, the next instruction is executed.
 
-branch on equal:
-beq,rsrc1, rsrc2, immediate: if (rsrc1 == rsrc2) {pc = pc + imm} else {pc = pc + 4}
-So if the two given registers contain equal values, then the pc is set to a relative address. Otherwise it simply continues with the next instruction in memory like with most other instructions with implicit control flow.
+However, there is also non-sequential, explicit control flow instructions (in RISC-U):
 
-jump and link:
-jal,rdest,immediate: rdest = pc + 4; pc = pc + immediate
-So the next instruction's location is stored in rdest and the pc is set to a relative address.
+beq (branch on equal):
+beq,rsrc1,rsrc2, imm: if (rsrc1 == rsrc2) {pc = pc + imm} else {pc = pc + 4}
+So if the two given registers contain equal values, then the pc is set to a relative address.
+Otherwise, it simply continues with the next instruction in memory like with most other instructions with implicit control flow.
+This is the foundation for loops and conditional statements.
 
-jump and link register:
-jalr,rdest,immediate(rsrc)
-TODO::::
-TODO::::
-TODO::::
-TODO::::
+jal (jump and link):
+jal,rdest,imm: rdest = pc + 4; pc = pc + imm
+So the next instruction's location is stored in rdest (linking) and the pc is set to a relative address. The address of
+the next instruction stored in rdest is used to be able to return back one when the program needs to continue
+from there again.
+
+jalr (jump and link register):
+jalr rdest,imm(rsrc1): tmp = ((rsrc1 + imm) / 2) * 2; rdest = pc + 4; pc = tmp
+The division by 2 followed by multiplication by 2 of the sum is to reset the LSB to ignore it.
+So jalr links the next instructions address in rdest and sets the pc to the sum of rsrc1 and imm.
+The advantage of jalr over jal is that it uses register relative jumping rather than pc relative jumping.
+Thus, since in Selfie a register is 32-Bits, code stored anywhere in the 4GB of memory can be reached using
+jalr (2^32 addresses can be encoded in 32 bits), which is infeasible for jal, due to the fact that jal can
+at most jump 2^11 addresses higher or lower than the pc.
+
+Data & Control flow in C*:
+Data Flow:
+Mainly assignments, but also procedures calls (return statements).
+Control Flow:
+Loops, conditional statements, procedure calls.
