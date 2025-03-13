@@ -1,1 +1,31 @@
-What is a symbol and what characterizes weak and strong symbols?
+What is a symbol, in what context do they appear and what are weak and strong symbols?
+
+A compiler goes through three main steps when compiling a program:
+1. Scanner
+2. Parser
+3. Code Generation
+
+The scanner reads a sequence of characters and returns a sequence of symbols (aka tokens),
+which are then processed by the parser, which determines whether the program is a valid program.
+Only then can code be generated.
+
+The scanner reads one character after another and turns the structured program into an unstructured
+sequence of symbols. A symbol can represent individual characters such as <, >, = (assignment),
+but also multiple characters if they belong together such as <=, ==, myvar (identifier).
+To stay efficient, only the last read symbol is stored.
+The scanner does this, because it makes parsing the program simpler, by only considering one symbol
+after another. It also makes it possible to allow arbitrary whitespace, which is ignored by the scanner,
+since those don't result in any symbols.
+
+The scanner only checks syntax and thus can only report syntax errors if there are any. The parser
+then also checks on syntax but mainly on semantics. Now it can happen that during compilation
+a syntax error is found and reported. The compiler could immediately terminate, however that would be
+rather inconvenient. Imagine the compiler reports a syntax error - you forgot a semicolon. So you
+fix it and compile again. But now the compiler reports a new syntax error, that it couldn't reach before,
+because the previous syntax error caused the compiler to terminate prematurely. So the goal is to
+continue parsing the program even in the event of syntax errors, which all need to be reported.
+So symbols are classified into weak and strong symbols. Weak symbols are symbols that are often forgotten,
+like semicolons. Strong symbols in Selfie are symbols usually not forgotten by the programmer, such
+as a type or keyword. When a syntax error is encountered, it is reported and then the compiler keeps
+scanning and reporting syntax errors, until it reaches a strong symbol. From there on it is assumed that
+the program is syntactically correct again and the compilation can continue.
