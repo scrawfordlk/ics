@@ -9,25 +9,25 @@ NOT 1 = 0
 0 AND 1 = 0
 1 AND 0 = 0
 1 AND 1 = 1
-(iff both are true)
+(iff both operands are true)
 
 0 OR 0 = 0
 0 OR 1 = 1
 1 OR 0 = 1
 1 OR 1 = 1
-(iff at least one is true)
+(iff at least one operand is true)
 
 0 XOR 0 = 0
 0 XOR 1 = 1
 1 XOR 0 = 1
 1 XOR 1 = 0
-(iff only one is true)
+(iff only one operand is true)
 
 0 NAND 0 = 1
 0 NAND 1 = 1
 1 NAND 0 = 1
 1 NAND 1 = 0
-(iff inverse of AND is true, so NOT(x AND y))
+(iff inverse of AND is true, so NOT (x AND y))
 
 
 Operators using only NAND:
@@ -107,4 +107,3 @@ Thus our truth table is:
 Which is exactly the truth table for XOR.
 
 This is how the NAND operator can be used to implement NOT, AND, OR and XOR.
-
