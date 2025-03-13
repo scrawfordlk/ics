@@ -3,10 +3,14 @@ How can you write a C* program that computes the power of an integer (with non-n
 
 // Start of program
 
+// declarations to solve forward references
+
 uint64_t power(uint64_t base, uint64_t exponent);
 uint64_t power_tail(uint64_t base, uint64_t exponent, uint64_t result);
 uint64_t mult(uint64_t a, uint64_t b);
 uint64_t mult_tail(uint64_t n, uint64_t times, uint64_t result);
+
+// definitions for actual program
 
 uint64_t power(uint64_t base, uint64_t exponent) {
   return power_tail(base, exponent, 1);
@@ -28,4 +32,10 @@ uint64_t mult_tail(uint64_t n, uint64_t times, uint64_t result) {
     return result;
   else
     return mult_tail(n, times - 1, result + n);
+}
+
+// a main procedure could look like this
+
+uint64_t main(uint64_t argc, uint64_t **argv) {
+    return power(2, 10);
 }
