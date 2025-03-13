@@ -1,62 +1,78 @@
-What is memory management, how can it be done and what are individual advantages/disadvantages?
+What is memory management and how can it be done with advantages/disadvantages?
 
-Problem: The more memory, the better: time & space trade off, program needs memory to work
-But memory is finite, so must have strategies/techniques on how to efficiently use it.
+Problem: Programs need memory to run. Often there is a time & space trade off, meaning that
+using more memory rewards you with a faster program. However, memory is finite, so there is
+a need for strategies/techniques to use memory efficiently. In particular, it is important
+to deallocate memory when it is not needed. In small programs this barely matters, since
+upon program termination all memory used is freed by the OS anyway, but it does play a bigger role
+if memory is scarce or the program runs for a long time. If for example a program runs through a
+loop where each iteration some memory is allocated but never deallocated, then we have a memory leak.
 
-important: Deallocate memory (though only important if memory is scarce or program runs long time)
-=> automatic deallocation is advantageous
+What's important when it comes to memory management is the liveness of information:
+If information is regarded as live, then that means it is still used/needed by the program.
+If information is deemed as dead, then that means that it's not needed anymore.
 
-IMportant to detect: Lifetime of information:
-Is information alive or dead? Live means that it is still used
-in the program. Dead means that it's not need anymore.
-Accessing values that are you think are live but are actually dead 
-
-Problem addressed by memory management: Keeping track of used and free memory
-Thus, the more used memory is live, the more efficient, since used memory is
-properly utilised. Meanwhile the invariant that free memory is dead must hold.
-
-There is no need to free memory for smaller programs, since upon termination it's all deallocated anyway by the OS.
+So the goal of memory management is to keep track of used and free memory.
+The more used memory is live the more efficient (since it is actually utilised).
+Also, the invariant that free memory is dead must hold, otherwise unsafe memory
+access can occur (other programs may mark it as used by them).
 
 Memory Management Tasks:
-Memory allocation: find free memory, return it and mark us used
-Memory deallocation: mark used memory as free
-Memory access: load/store memory from used memory
-Memory defragmentation: find free memory blocks and merge them to avoid memory fragmentation (having used memory
+- Memory allocation: find free memory, return it and mark us used.
+- Memory deallocation: mark used memory as free.
+- Memory access: load/store memory from used memory.
+- Memory defragmentation: find free memory blocks and merge them to avoid fragmentation (having used memory
 scattered all over memory instead of next to each other results in possibly not being able to find a big enough
 memory block to allocate memory)
 
+"Types" of memory management:
 Static memory allocation:
-Fixed amount of memory is allocated (determined at compile time),
-which is only deallocated once the program ends.
+Fixed amount of memory is allocated (determined at compile time), which is only deallocated once the program ends.
+Used for components whose size can be determined at compile time and is alive during the entire program.
+This is in particular is applicable to the code segment in memory (just contains the compiled program, which
+doesn't change dynamically) and the data segment, which stores character/string literals, big integers and global variables
+which are all kept live through the whole program.
 Advantage:
-Simple
+- Simple
 Disadvantage:
-Inflexible (must know how much memory is needed before hand, can't be
-changed dynamically during runtime, thus you could allocate to little or
-too much)
-not deallocation: only deallocated once program terminates.
-Used for components whose size can be determined at compile time and is alive during
-entire program. This is in particular the code segment in memory (just contains the comiled program, which
-doesn't change dynamically) and the data segment, which stores  character/string literals, big integers and global variables
-which all are kept live through the whole program.
+- Inflexible (You must know how much memory is needed beforehand and this amount can't be changed dynamically during runtime,
+thus there is the potential to allocate too little or too much)
+- No deallocation until program terminates.
+
 
 Dynamic memory allocation: Stack Allocation:
 Allocation happens when a new stack frame is pushed onto the stack. (when calling procedure)
 Deallocation happens upon destruction of this stack frame. (returning from the procedure)
+This is in the stack segment that contains parameters and local variables.
 Advantage:
-Dynamic
-Automatic Deallocation
+- Dynamic
+- Automatic Deallocation
 Disadvantage:
-Deallocation is done in reverse order only (LIFO principle of a stack)
-Allocated memory is deallocated as soon as the procedure ends - so the information
+- Deallocation is done in reverse order only (LIFO principle of a stack)
+- Allocated memory is deallocated as soon as the procedure ends - so the information
 allocated can't reach outside the procedure body.
-Examples: stack segment that contains values of paramters and local variables of a procedure.
 
 Dynamic memory allocation: Heap Allocation:
 Allocation is done on the heap. A pointer to that allocated memory is used to access it.
+This can be done using a bump pointer allocator: the allocator points to the memory
+address where the next free memory block is. Each allocation, the pointer is bumped up to
+the next free memory block.
 Advantage:
-Can live beyond its scope
+- Dynamic
+- Can live beyond its scope
 Disadvantage:
-No automatic Deallocation (memory leaks possible)
-performance
-Examples: Heap Segment that stores anything that can't be stored in the other segments.
+- No automatic deallocation (memory leaks possible), so it must be deallocated manually.
+
+FSM Memory Management:
+Manages memory via state transitions. States are remembered by the location in the code during execution.
+Advantages:
+- Neither allocation nor deallocation is needed. => automatic memory management.
+Disadvantage:
+- FSMs are limited computational models (only for regular languages) and thus can't always be used.
+
+Garbage Collection:
+Uses a garbage collector that frees memory which is guaranteed to contain dead values.
+- Advantage:
+No need to deallocate.
+Disadvantage:
+- Garbage collector cannot always know which values are dead and thus may not free much memory.
