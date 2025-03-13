@@ -1,0 +1,32 @@
+What is a string and how does it work internally?
+
+The data structure string is a collection of characters that are stored contiguously in memory. So each character is stored
+next to each other in memory. Thus, a string is conceptually really just an array of characters. The string is then referred
+to via a pointer to the first character. This is efficient when e.g. passing it as an argument to a procedure, since only
+the pointer needs to be copied, rather than every single character.
+
+(2)
+  Thus, a string is an array of characters. The string is then referred to via a pointer to the first character.
+  This would however mean, that it is unknown how long the string is, i.e. the string never ends. Strings therefore are NULL-terminated, which is
+  the practice of simply adding one more special character, the NULL character, after the actual contents of the string.
+  This character serves essentially as a finish line, marking the end of the string. Thus, to get the contents of a string, all
+  you need is a pointer to the string's first character. Then every character after that character is part of the string, unless
+  you encounter the NULL character in which case the string has ended.
+
+(3)
+- Since strings are stored as arrays of characters, how are characters stored in the first place? This is where encoding comes in.
+  Simply decide for each character a distinguishable bit sequence, that represents that character. Now you can use these bit sequences
+  to represent characters. This of course implies that everyone, who wants to communicate with you, must agree to use the same encoding.
+  A simple encoding of characters is ASCII, the American Standard Code for Information Interchange. There are 128 ASCII characters,
+  thus 7 Bits are needed to encode all ASCII characters, since 2^7 == 128. Thus, each character can fit in one byte (which is 8 bits).
+  Examples for characters and their encoding are: 0000000 for the aforementioned NULL character, 0110000 for the character 0 (not the number,
+  but the character) and 0001010 for the linefeed character, which is used to encode a newline.
+  Due to the fact, that English characters are not the only form of writing in this world, a new Standard was needed to be able to support
+  language specific characters like e.g. Chinese characters.
+  Therefore, a newer Standard exists, that supports more than 128 characters called UTF-8, 8-bit Unicode Transformation Format.
+  It is backwards compatible with ASCII, thus an ASCII file can be interpreted as a UTF-8 file. (but not vice versa)
+  UTF-8 characters are variable-sized and can use multiple bytes to encode its characters, which is why it supports a lot more characters.
+
+(4)
+- Text now can be created by splitting the text into smaller parts (because fitting one long piece of text in memory might be difficult, since
+  it would have to be stored contiguously), which are stored non-contiguously and store pointers to these parts.

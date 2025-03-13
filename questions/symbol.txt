@@ -1,0 +1,1 @@
+What is a symbol and what characterizes weak and strong symbols?

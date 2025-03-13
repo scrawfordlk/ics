@@ -1,0 +1,110 @@
+How can the boolean algebra operators NOT, AND, OR and XOR be implemented using only NAND?
+
+Truth table for these operators:
+NOT 0 = 1
+NOT 1 = 0
+(invert truth value)
+
+0 AND 0 = 0
+0 AND 1 = 0
+1 AND 0 = 0
+1 AND 1 = 1
+(iff both are true)
+
+0 OR 0 = 0
+0 OR 1 = 1
+1 OR 0 = 1
+1 OR 1 = 1
+(iff at least one is true)
+
+0 XOR 0 = 0
+0 XOR 1 = 1
+1 XOR 0 = 1
+1 XOR 1 = 0
+(iff only one is true)
+
+0 NAND 0 = 1
+0 NAND 1 = 1
+1 NAND 0 = 1
+1 NAND 1 = 0
+(iff inverse of AND is true, so NOT(x AND y))
+
+
+Operators using only NAND:
+
+NOT:
+NOT x = x NAND x
+Why? See the truth table:
+0 NAND 0 = 1
+1 NAND 1 = 0
+This is equivalent to NOT, which can easily
+be verified by comparing both tables.
+
+
+AND:
+x AND y = (x NAND y) NAND (x NAND y)
+Why? We've shown above that x NAND x = NOT x.
+So the expression (x NAND y) NAND (x NAND y) is actually equivalent
+to NOT (x NAND y). NAND is the inverse of
+AND, that is, it's a combination of NOT and AND.
+So NOT in combination with NAND results in AND,
+because the NOTs cancel each other out.
+
+
+OR:
+x OR y = (x NAND x) NAND (y NAND y)
+Why? Like before, this is equal to (NOT x) NAND (NOT y)
+So this means that for the NAND table, we invert each input value:
+From:
+0 NAND 0 = 1
+0 NAND 1 = 1
+1 NAND 0 = 1
+1 NAND 1 = 0
+To:
+1 NAND 1 = 1
+1 NAND 0 = 1
+0 NAND 1 = 1
+0 NAND 0 = 0
+We can then reorder it:
+0 NAND 0 = 0
+0 NAND 1 = 1
+1 NAND 0 = 1
+1 NAND 1 = 1
+And this table is equivalent to the OR truth table.
+(Reordering is of course not necessary, but it makes it
+clearer)
+
+
+XOR:
+x XOR y = ((x NAND x) NAND y) NAND (x NAND (y NAND y))
+Why? First substitute the NOTs: ((NOT X) NAND y) NAND (x NAND (NOT y))
+Then see the corresponding truth table:
+Let x = 0, y = 0
+=> ((NOT 0) NAND 0) NAND (0 NAND (NOT 0))
+= (1 NAND 0) NAND (0 NAND 1)
+= 1 NAND 1 = 0 => False
+
+Let x = 0, y = 1
+=> ((NOT 0) NAND 1) NAND (0 NAND (NOT 1))
+= (1 NAND 1) NAND (0 NAND 0)
+= 0 NAND 1 = 1 => True
+
+Let x = 1, y = 0
+=> ((NOT 1) NAND 0) NAND (1 NAND (NOT 0))
+= (0 NAND 0) NAND (1 NAND 1)
+= 1 NAND 0 = 1 => True
+
+Let x = 1, y = 1
+=> ((NOT 1) NAND 1) NAND (1 NAND (NOT 1))
+= (0 NAND 1) NAND (1 NAND 0)
+= 1 NAND 1 = 0 => False
+
+Thus our truth table is:
+0 XOR 0 = 0
+0 XOR 1 = 1
+1 XOR 0 = 1
+1 XOR 1 = 0
+Which is exactly the truth table for XOR.
+
+This is how the NAND operator can be used to implement NOT, AND, OR and XOR.
+

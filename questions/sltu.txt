@@ -1,0 +1,88 @@
+Why does RISC-U only require the instruction "sltu" to implement the functionality of all comparison operators and how could they be implemented?
+
+The sltu instruction:
+stlu rdest,rsrc1,rsrc2: if (rsrc1 < rsrc2) {rdest = 1} else {rdest = 0} (and of course pc = pc + 4)
+So it can be used to check for the < relation between two registers.
+The other comparison operators >, <=, >=, ==, != can be implemented using only this operator like this:
+(For the RISC-U code assume the registers t0 and t1 are rsrc1 and rsrc2 respectively and t0 should store the result of the comparison operation)
+
+
+>:
+rsrc1 > rsrc2 is equivalent to rsrc2 < rsrc1. (trivially)
+
+Code Snippet:
+sltu t0,t1,t0
+
+
+>=:
+rsrc1 >= rsrc2 is equivalent to 1 - (rsrc1 < rsrc2) == 1
+Proof:
+"=>"
+Assume rsrc1 >= rsrc2 holds.
+Then rsrc1 < rsrc2 is false, since it's the inverse.
+Thus 1 - (rsrc1 < rsrc2) == 1 - 0 == 1.
+"<="
+Assume 1 - (rsrc1 < rsrc2) == 1.
+Then rsrc1 < rsrc2 must evaluate to 0.
+So the inverse rsrc1 >= rsrc2 evaluates to
+true.
+
+Code Snippet:
+sltu t0,t0,t1
+addi t1,zero,1
+sub t0,t1,t0
+
+
+<=:
+rsrc1 <= rsrc2 is equivalent to 1 - (rsrc2 < rsrc1) == 1
+Proof:
+"=>"
+Assume rsrc1 <= rsrc2 holds.
+Then rsrc1 > rsrc2 is false, since it's the inverse.
+Therefore rsrc2 < rsrc1 also evaluates to 0.
+Thus 1 - (rsrc2 < rsrc1) == 1 - 0 == 1
+"<="
+Assume 1 - (rsrc2 < rsrc1) == 1.
+Then rsrc2 < rsrc1 must evaluate to 0.
+Which means that the inverse is true.
+So rsrc2 >= rsr1 holds which is equivalent to rsrc1 <= rsrc2.
+
+Code Snippet:
+sltu t0,t1,t0
+addi t1,zero,1
+sub t0,t1,t0
+
+
+==:
+rsrc1 == rsrc2 is equivalent to rsrc2 - rsrc1 < 1.
+Proof:
+"=>"
+Assume rsrc1 == rsrc2 holds. Then their difference must
+equal 0. 0 < 1, so this holds.
+"<="
+Assume rsrc2 - rsrc1 < 1. Since we are only using unsigned
+integers, only 0 can fulfill this. For two integers n and m,
+n - m can only be 0 iff n == m, thus rsrc1 == rsrc2.
+
+Code Snippet:
+sub t0,t1,t0
+addi t1,zero,1
+sltu t0,t0,t1
+
+
+!=:
+rsrc1 != rsrc2 is equivalent to 0 < rsrc2 - rsrc1.
+Proof:
+"=>"
+Assume rsrc1 != rsrc2 holds.
+Then rsrc2 - rsrc1 != 0 must hold, otherwise they'd
+be equal. Since we are working with unsigned integers, 
+this difference is greater than 0.
+"<="
+Assume 0 < rsrc2 - rsrc1 holds. Then rsrc1 == rsrc2
+can't hold, since their difference would be equal
+to 0. Thus, rsrc1 != rsrc2 must hold.
+
+Code Snippet:
+sub t0,t1,t0
+sltu t0,zero,t0

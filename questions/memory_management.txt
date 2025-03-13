@@ -1,0 +1,62 @@
+What is memory management, how can it be done and what are individual advantages/disadvantages?
+
+Problem: The more memory, the better: time & space trade off, program needs memory to work
+But memory is finite, so must have strategies/techniques on how to efficiently use it.
+
+important: Deallocate memory (though only important if memory is scarce or program runs long time)
+=> automatic deallocation is advantageous
+
+IMportant to detect: Lifetime of information:
+Is information alive or dead? Live means that it is still used
+in the program. Dead means that it's not need anymore.
+Accessing values that are you think are live but are actually dead 
+
+Problem addressed by memory management: Keeping track of used and free memory
+Thus, the more used memory is live, the more efficient, since used memory is
+properly utilised. Meanwhile the invariant that free memory is dead must hold.
+
+There is no need to free memory for smaller programs, since upon termination it's all deallocated anyway by the OS.
+
+Memory Management Tasks:
+Memory allocation: find free memory, return it and mark us used
+Memory deallocation: mark used memory as free
+Memory access: load/store memory from used memory
+Memory defragmentation: find free memory blocks and merge them to avoid memory fragmentation (having used memory
+scattered all over memory instead of next to each other results in possibly not being able to find a big enough
+memory block to allocate memory)
+
+Static memory allocation:
+Fixed amount of memory is allocated (determined at compile time),
+which is only deallocated once the program ends.
+Advantage:
+Simple
+Disadvantage:
+Inflexible (must know how much memory is needed before hand, can't be
+changed dynamically during runtime, thus you could allocate to little or
+too much)
+not deallocation: only deallocated once program terminates.
+Used for components whose size can be determined at compile time and is alive during
+entire program. This is in particular the code segment in memory (just contains the comiled program, which
+doesn't change dynamically) and the data segment, which stores  character/string literals, big integers and global variables
+which all are kept live through the whole program.
+
+Dynamic memory allocation: Stack Allocation:
+Allocation happens when a new stack frame is pushed onto the stack. (when calling procedure)
+Deallocation happens upon destruction of this stack frame. (returning from the procedure)
+Advantage:
+Dynamic
+Automatic Deallocation
+Disadvantage:
+Deallocation is done in reverse order only (LIFO principle of a stack)
+Allocated memory is deallocated as soon as the procedure ends - so the information
+allocated can't reach outside the procedure body.
+Examples: stack segment that contains values of paramters and local variables of a procedure.
+
+Dynamic memory allocation: Heap Allocation:
+Allocation is done on the heap. A pointer to that allocated memory is used to access it.
+Advantage:
+Can live beyond its scope
+Disadvantage:
+No automatic Deallocation (memory leaks possible)
+performance
+Examples: Heap Segment that stores anything that can't be stored in the other segments.

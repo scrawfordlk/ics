@@ -1,0 +1,12 @@
+What do variables work internally in C*?
+
+Variables are implemented as symbolic references to values. This is done using symbol tables
+which are tables where for a variable's identifier, the corresponding value can be retrieved.
+
+Variables can be classified into two variants depending on the location of their declaration:
+- Global variables that are declared in the global scope (outside of any procedure)
+- Local variables that are declared in a local scope (anywhere else)
+
+Storage:
+Global variables are stored in the data segment in memory whereas local variables are
+stored on the stack.

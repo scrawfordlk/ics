@@ -1,0 +1,1 @@
+How does (main) memory work during code execution? What are the components and how do they interact with each other?

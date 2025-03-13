@@ -1,0 +1,44 @@
+How can a grammar be extended, so that it supports binary number literals notated with the prefix "0b" and how does
+the corresponding finite state machine look like? What is a special characteristic of finite state machines
+and for what type of languages are they used?
+
+
+Binary numbers are often prefixed with (unnecessary) 0's, to form an n-bit Number.
+So this grammar will purposefully allow binary numbers starting with 0's.
+(e.g. 0b00001010, which is of course the decimal number 10)
+
+The grammar using EBNF:
+binary_digit = ( "0" | "1" ) .
+binary_number = "0b" binary_digit { binary_digit } .
+(if we are supposed to extend selfie, then additionally: integer = decimal_number | binary_number .)
+
+And that is it. A binary_number must always start with "0b"
+and must have at least one binary_digit, namely 0 or 1, but may
+have more than that.
+
+The corresponding finite state machine is "drawn" here where:
+"|n~|" denotes a non-accepting state;
+"|n*|" denotes an accepting state;
+(Quite tedious using only ASCII characters)
+
+                                 |---- "1" -------|   |-- "1" -------|
+                                 |                v   |              |
+|1~| -- "0" --> |2~| -- "b" --> |3~| -- "0" --> |4*|---- "0" ----|   |
+                                                  ^              |   |
+                                                  |--------------|   |
+                                                  |------------------|
+
+If "0" is supposed to be a valid number (e.g. as a decimal number 0), then the state |2~| must
+be changed to be an accepting state. However if we only want binary numbers using the "0b" prefix
+notation, then it must be kept non-accepting.
+It should be assumed that all other cases result in a termination, as outlined in the book.
+
+A special characteristic of finite state machines is, that they do not require any memory for their
+implementation, since they "forget" what they previously read. They only need to be aware of the state
+they are in, of which there are a finite amount. In code the state is remembered by being at a specific
+spot while the code is executing.
+
+Finite state machines can be used for so-called "regular languages". To determine whether the language produced
+by a grammar is regular, you simply use the production rules to replace every non-terminal on the right-hand-side, until
+there are only terminals on the right-hand-side left. If that is possible, then the language is regular and thus
+can be implemented via a finite state machine.
