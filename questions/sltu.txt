@@ -2,9 +2,9 @@ Why does RISC-U only require the instruction "sltu" to implement the functionali
 
 The sltu instruction:
 stlu rdest,rsrc1,rsrc2: if (rsrc1 < rsrc2) {rdest = 1} else {rdest = 0} (and of course pc = pc + 4)
-So it can be used to check for the < relation between two registers.
+So it can be used to check for the < relation between two registers and places into rdest the value 1 if it evaluates true, else 0.
 The other comparison operators >, <=, >=, ==, != can be implemented using only this operator like this:
-(For the RISC-U code assume the registers t0 and t1 are rsrc1 and rsrc2 respectively and t0 should store the result of the comparison operation)
+(For the RISC-U code assume the registers t0 and t1 are rsrc1 and rsrc2 respectively and t0 is also rdest)
 
 
 >:
