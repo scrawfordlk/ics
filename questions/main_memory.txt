@@ -1,1 +1,45 @@
-How does (main) memory work during code execution? What are the components and how do they interact with each other?
+What segments is main memory made up of and what is their purpose?
+
+The main memory can be divided into four segments classified into two sections:
+Static Memory:
+- Code segment
+- Data segment
+
+Dynamic Memory:
+- Stack Segment
+- Heap Segment
+
+Static memory stores information whose size is known at compile time. So their size never changes
+during execution. Dynamic memory stores information whose size is unknown at compile time but only
+known at runtime. This means that the dynamic memory segments stack and heap can change size during
+program execution.
+
+The physical order of these goes as follows: The code segment is located at the lowest addresses.
+Above it lies the data segment, which is adjacent to the heap segment. The stack segment is at
+the very top, i.e. at the highest addresses. So there is a gap between stack and heap, which is
+necessary, since they are dynamic memory segments, that can change size during program execution.
+
+Code segment:
+This section stores the code of the running program, as intended by a Von Neumann Machine. The CPU's program counter (pc)
+refers to an instruction in this segment.
+
+Data segment:
+This is where data is stored that stays for the entire duration of the program. This includes the values of
+all global variables, string literals and big integers. The CPU's register gp (global pointer) points to
+the end of this segment. Accessing anything in the data segment is done by using negative offsets in
+combination with gp.
+
+Stack segment:
+This segment contains the values of local variables, parameters and some additional data. The register sp
+(stack pointer) is used to indicate the top of the stack (which is lower than the highest address of the stack,
+since this stack is "upside down"). So decrementing it grows the stack, incrementing it shrinks the stack.
+For every procedure call, a new stack frame is pushed onto the stack. Once the procedure terminates, the stack
+frame is removed again. Apart from sp, there is also frame pointer which points to the stack frame. The reason
+why a frame pointer is used, is because the sp may change during a procedure while a frame pointer does not. This
+allows access of the information of a particular stack through offsets of the frame pointer without having to
+worry about it changing values like sp does.
+
+Heap Segment:
+This is where information that can't go in any other segment goes. A bump pointer is used to indicate the
+end of the heap segment. It is called bump pointer, because upon heap allocation, it is bumped up to point
+to the next free memory segment.
