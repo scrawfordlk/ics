@@ -41,7 +41,7 @@ implementation, since they "forget" what they previously read. They only need to
 they are in, of which there are a finite amount. In code the state is remembered by being at a specific
 spot while the code is executing.
 
-Finite state machines can be used for so-called "regular languages". To determine whether the language produced
+Finite state machines are the machine model for so-called "regular languages". To determine whether the language produced
 by a grammar is regular, you simply use the production rules to replace every non-terminal on the right-hand-side, until
 there are only terminals on the right-hand-side left. If that is possible, then the language is regular and thus
 can be implemented via a finite state machine.
