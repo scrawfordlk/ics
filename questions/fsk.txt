@@ -34,4 +34,3 @@ if H terminates with I as input, otherwise false? In TM terms: Is there a UTM H 
 encoded FSM of a TM P and an input I for P and returns true if P reaches it's accepting state if interpreted
 with input I?
 This is an undecidable problem, due to the fact that no TM can compute this.
-
